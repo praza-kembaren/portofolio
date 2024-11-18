@@ -28,7 +28,7 @@ with col1:
     st.markdown("""[LinkedIn](https://www.linkedin.com/in/praza-kembaren) | [GitHub](https://github.com/praza-kembaren) | [Twitter](https://x.com/prazakembaren)""")
 
 with col2:
-    file_ = open("file/ezgif.com-speed.gif", "rb")
+    file_ = open("/workspaces/portofolio/file/ezgif.com-speed.gif", "rb")
     contents = file_.read()
     data_url = base64.b64encode(contents).decode("utf-8")
     file_.close()

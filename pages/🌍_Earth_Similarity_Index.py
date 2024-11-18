@@ -58,46 +58,56 @@ st.code(code, language="python")
 df = pd.read_csv("file/exofix3.csv")
 st.dataframe(df)
 
-code = '''dict = {'pl_name':['Mercury', 'Venus', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune'],
-        'st_lum':[1,1,1,1,1,1,1],
-        'a':[0.3871, 0.7233, 1.5273, 5.2028, 9.5388, 19.1914, 30.0611],
-        'pl_rade' : [0.38, 0.95, 0.532, 11.2, 9.5, 4, 3.9]
-       }
+#Insolation Flux (S)
+S = 10**df['st_lum']*(1/df['pl_orbsmax'])**2
 
-df2 = pd.DataFrame(dict)
-df2
-    '''
-st.code(code, language="python")
+df['st_flu'] = S
 
 code = '''#Insolation Flux (S)
 S = 10**df['st_lum']*(1/df['pl_orbsmax'])**2
-S2 = df2['st_lum']*(1/df2['a'])**2
 
 df['st_flu'] = S
-df2['st_flu2'] = S2
     '''
 st.code(code, language="python")
 
+df['a']  = ((df['st_flu'] - 1)/(df['st_flu'] + 1))**2
+df['b']  = ((df['pl_rade']- 1)/(df['pl_rade']+ 1))**2
+df['esi'] = 1 - np.sqrt(0.5*(df['a'] + df['b']))
+
 code = '''df['a']  = ((df['st_flu'] - 1)/(df['st_flu'] + 1))**2
 df['b']  = ((df['pl_rade']- 1)/(df['pl_rade']+ 1))**2
-
-df2['c'] = ((df2['st_flu2'] - 1)/(df2['st_flu2'] + 1))**2
-df2['d'] = ((df2['pl_rade']- 1)/(df2['pl_rade']+ 1))**2
-df2['esi2'] = 1 - np.sqrt(0.5*(df2['c'] + df2['d']))
 df['esi'] = 1 - np.sqrt(0.5*(df['a'] + df['b']))
     '''
 st.code(code, language="python")
 
 st.subheader("Visualization")
-code = '''plt.scatter( df['st_flu'], df['pl_rade'], s=1)
-plt.xscale('log')
+
+code = '''fig, ax =plt.subplots()
+ax.scatter( df['st_flu'], df['pl_rade'], s=1)
+ax.set_xscale('log')
 #plt.ylim(10**-2, 10**2)
 #plt.xlim(10**-4, 10**4)
-plt.yscale('log')
-plt.xlabel(r"Stellar Flux ($F_{\oplus}$)", fontsize=10)
-plt.ylabel(r"Planet Radius ($R_{\oplus}$)", fontsize=10)
+ax.set_yscale('log')
+ax.set_xlabel(r"Stellar Flux ($F_{\oplus}$)", fontsize=10)
+ax.set_ylabel(r"Planet Radius ($R_{\oplus}$)", fontsize=10)
 plt.gca().invert_xaxis()
     '''
 st.code(code, language="python")
+
+fig, ax =plt.subplots()
+ax.scatter( df['st_flu'], df['pl_rade'], s=1)
+ax.set_xscale('log')
+#plt.ylim(10**-2, 10**2)
+#plt.xlim(10**-4, 10**4)
+ax.set_yscale('log')
+ax.set_xlabel(r"Stellar Flux ($F_{\oplus}$)", fontsize=10)
+ax.set_ylabel(r"Planet Radius ($R_{\oplus}$)", fontsize=10)
+plt.gca().invert_xaxis()
+ax.set_title("Radius vs Stellar Flux")
+st.pyplot(fig)
+
+
+
+
 
 
